@@ -8,7 +8,6 @@ import net.mormolhs.facebook.fbanalytics.resources.GlobalParameters;
 import net.mormolhs.facebook.fbanalytics.ui.dataview.FbStatsDateUtils;
 import net.mormolhs.facebook.fbanalytics.utils.ColumnSorter;
 import org.jbundle.thin.base.screen.jcalendarbutton.JCalendarButton;
-import sun.swing.table.DefaultTableCellHeaderRenderer;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -31,7 +30,6 @@ import java.util.Vector;
  */
 public class LandingPage extends JFrame {
 
-    DefaultTableCellHeaderRenderer header = new DefaultTableCellHeaderRenderer();
     PageTable pages;
     String pageId;
     DefaultTableModel dtm;
