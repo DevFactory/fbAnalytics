@@ -6,6 +6,7 @@ import net.mormolhs.facebook.fbanalytics.data.pages.PageTable;
 import net.mormolhs.facebook.fbanalytics.integration.facebookdatacollectors.FacebookDataCollector;
 import net.mormolhs.facebook.fbanalytics.resources.GlobalParameters;
 import net.mormolhs.facebook.fbanalytics.ui.dataview.FbStatsDateUtils;
+import net.mormolhs.facebook.fbanalytics.utils.ColumnSorter;
 import org.jbundle.thin.base.screen.jcalendarbutton.JCalendarButton;
 import sun.swing.table.DefaultTableCellHeaderRenderer;
 
@@ -20,8 +21,10 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
+import java.util.Vector;
 
 /**
  * Created by toikonomakos on 3/16/14.
@@ -34,7 +37,8 @@ public class LandingPage extends JFrame {
     DefaultTableModel dtm;
     ImageIcon coverPicture;
     ImageIcon profilePicture;
-    JBackgroundPanel panel2;
+    JPanel panel2;
+    JLabel coverPictureLabel;
     JLabel labelProfilePicture;
     JLabel pageNameLabel;
     JLabel pageLikesLabel;
@@ -55,6 +59,7 @@ public class LandingPage extends JFrame {
         public boolean isCellEditable(int arg0, int arg1) {
             return false;
         }
+
         @Override
         public Class<?> getColumnClass(int col) {
             if (col == 1) {
@@ -93,7 +98,7 @@ public class LandingPage extends JFrame {
         executeButton.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() != 0) {
-                performActionForExecuteButtonListener();
+                    performActionForExecuteButtonListener();
                 }
             }
         });
@@ -112,15 +117,18 @@ public class LandingPage extends JFrame {
         panel234 = new JPanel();
         panel234.setLayout(new BoxLayout(panel234, BoxLayout.Y_AXIS));
         this.add(panel234, BorderLayout.EAST);
-        panel2 = new JBackgroundPanel();
+        panel2 = new JPanel();
         panel2.setPreferredSize(new Dimension(950, 150));
         panel2.setMaximumSize(new Dimension(1050, 150));
 //        add top panel for cover picture
-        if (coverPicture == null) {
+        if (coverPictureLabel == null) {
+            coverPictureLabel = new JLabel();
             try {
                 URL img = new URL("http://www.acsu.buffalo.edu/~rslaine/imageNotFound.jpg");
                 coverPicture = new ImageIcon(img);
-                panel2.setImg(coverPicture);
+                coverPictureLabel.setIcon(coverPicture);
+                panel2.add(coverPictureLabel);
+                panel2.repaint();
             } catch (MalformedURLException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
@@ -150,7 +158,7 @@ public class LandingPage extends JFrame {
         JPanel panel3a = new JPanel();
         panel3a.setLayout(new GridLayout(1, 1, 2, 0));
         panel3a.add(labelProfilePicture, BorderLayout.EAST);
-        panel3a.add(pageInfoPanel,BorderLayout.CENTER);
+        panel3a.add(pageInfoPanel, BorderLayout.CENTER);
         panel3a.repaint();
 
         photosEnabled = new JCheckBox("Photos");
@@ -222,8 +230,8 @@ public class LandingPage extends JFrame {
         JLabel textAreaLabel = new JLabel("            Results: ");
         textAreaLabel.setFont(new Font("Serif", Font.BOLD, 14));
         textAreaLabel.setEnabled(true);
-        panel3br3.add(textAreaLabel,BorderLayout.EAST);
-        panel3br3.add(textarea,BorderLayout.WEST);
+        panel3br3.add(textAreaLabel, BorderLayout.EAST);
+        panel3br3.add(textarea, BorderLayout.WEST);
         panel3br3.add(executeButton);
         panel3br3.add(new JLabel(""));
         panel3b.add(panel3br3);
@@ -231,7 +239,7 @@ public class LandingPage extends JFrame {
         panel3a.repaint();
         panel3b.repaint();
         panel3.setLayout(new GridLayout(1, 2, 300, 0));
-        panel3.add(panel3a,BorderLayout.WEST);
+        panel3.add(panel3a, BorderLayout.WEST);
         panel3.add(panel3b);
         panel3.repaint();
         panel234.add(panel3);
@@ -241,7 +249,7 @@ public class LandingPage extends JFrame {
         table4 = new JTable();
         table4.setAutoCreateRowSorter(true);
         table4.setRowHeight(70);
-        dtm = populatePostDataOnGui(pages, pageId,false);
+        dtm = populatePostDataOnGui(pages, pageId, false);
         table4.setModel(dtm);
         setupTable4Size();
         table4.repaint();
@@ -333,27 +341,31 @@ public class LandingPage extends JFrame {
                 }
             }
         };
-        if (postDataVisible){
-        int count = 1;
-        for (int i = 0; i < pages.getPageDetails().get(pageId).getPostData().getTable().size(); i++) {
-            if (GlobalParameters.PHOTOS_ENABLED && pages.getPageDetails().get(pageId).getPostData().getTable().get(i).getType().equals("247")) {
-                table.addRow((Object[]) this.getTableRowBasedOnPosition(pages, pageId, i, count));
-                count++;
-            }
-            if (GlobalParameters.LINKS_ENABLED && pages.getPageDetails().get(pageId).getPostData().getTable().get(i).getType().equals("80")) {
-                table.addRow((Object[]) this.getTableRowBasedOnPosition(pages, pageId, i, count));
-                count++;
-            }
-            if (GlobalParameters.TEXTS_ENABLED && pages.getPageDetails().get(pageId).getPostData().getTable().get(i).getType().equals("46")) {
-                table.addRow((Object[]) this.getTableRowBasedOnPosition(pages, pageId, i, count));
-                count++;
+        if (postDataVisible) {
+            int count = 1;
+            for (int i = 0; i < pages.getPageDetails().get(pageId).getPostData().getTable().size(); i++) {
+                if (GlobalParameters.PHOTOS_ENABLED && pages.getPageDetails().get(pageId).getPostData().getTable().get(i).getType().equals("247")) {
+                    table.addRow((Object[]) this.getTableRowBasedOnPosition(pages, pageId, i, count));
+                    count++;
+                }
+                if (GlobalParameters.LINKS_ENABLED && pages.getPageDetails().get(pageId).getPostData().getTable().get(i).getType().equals("80")) {
+                    table.addRow((Object[]) this.getTableRowBasedOnPosition(pages, pageId, i, count));
+                    count++;
+                }
+                if (GlobalParameters.TEXTS_ENABLED && pages.getPageDetails().get(pageId).getPostData().getTable().get(i).getType().equals("46")) {
+                    table.addRow((Object[]) this.getTableRowBasedOnPosition(pages, pageId, i, count));
+                    count++;
+                }
             }
         }
-        }
+        Vector data = table.getDataVector();
+        Collections.sort(data, new ColumnSorter(1, false));
+        table.fireTableStructureChanged();
         return table;
     }
 
     private Object getTableRowBasedOnPosition(PageTable pages, String pageId, int i, int count) {
+        System.out.println(String.valueOf((double)(Math.round((Double.valueOf("10")/Double.valueOf("3"))*100))/100));
         return new Object[]{
                 count,
                 this.getLabelFromImageUrl(pages.getPageDetails().get(pageId).getPostData().getTable().get(i).getThumbnail()),
@@ -367,8 +379,8 @@ public class LandingPage extends JFrame {
                 Integer.valueOf(pages.getPageDetails().get(pageId).getPostData().getTable().get(i).getLikes()) + Integer.valueOf(pages.getPageDetails().get(pageId).getPostData().getTable().get(i).getComments()) + Integer.valueOf(pages.getPageDetails().get(pageId).getPostData().getTable().get(i).getShares()),
                 Integer.valueOf(pages.getPageDetails().get(pageId).getPostData().getTable().get(i).getReached()),
                 Integer.valueOf(pages.getPageDetails().get(pageId).getPostData().getTable().get(i).getClicks()),
-                pages.getPageDetails().get(pageId).getPostData().getTable().get(i).getReached().equals("0") ? "0%" :
-                        String.valueOf(((Integer.valueOf(pages.getPageDetails().get(pageId).getPostData().getTable().get(i).getClicks())) * 100) / Integer.valueOf(pages.getPageDetails().get(pageId).getPostData().getTable().get(i).getReached())) + "%"};
+                pages.getPageDetails().get(pageId).getPostData().getTable().get(i).getReached().equals("0") ? "0" :
+                        String.valueOf((double)(Math.round(((Double.valueOf(pages.getPageDetails().get(pageId).getPostData().getTable().get(i).getClicks()))) / Double.valueOf(pages.getPageDetails().get(pageId).getPostData().getTable().get(i).getReached())*100))/100)};
     }
 
     private ImageIcon getLabelFromImageUrl(String imageUrl) {
@@ -407,7 +419,7 @@ public class LandingPage extends JFrame {
         return picture;
     }
 
-    private void performActionForPageListListener(){
+    private void performActionForPageListListener() {
         try {
             URL coverImg;
             URL profileImg;
@@ -441,11 +453,12 @@ public class LandingPage extends JFrame {
         labelProfilePicture.setVerticalAlignment(SwingConstants.CENTER);
         labelProfilePicture.setHorizontalAlignment(SwingConstants.CENTER);
         labelProfilePicture.setPreferredSize(new Dimension(profilePicture.getIconWidth(), profilePicture.getIconHeight()));
-        panel2.setImg(coverPicture);
+        coverPictureLabel.setIcon(coverPicture);
+        panel2.add(coverPictureLabel);
         panel2.repaint();
         panel3.repaint();
-        if (dtm!=null && dtm.getRowCount()>0){
-            dtm = populatePostDataOnGui(pages,pageId,false);
+        if (dtm != null && dtm.getRowCount() > 0) {
+            dtm = populatePostDataOnGui(pages, pageId, false);
             table4.setModel(dtm);
             setupTable4Size();
             table4.repaint();
@@ -453,7 +466,7 @@ public class LandingPage extends JFrame {
 
     }
 
-    private void performActionForExecuteButtonListener(){
+    private void performActionForExecuteButtonListener() {
         GlobalParameters.LINKS_ENABLED = linksEnabled.isSelected();
         GlobalParameters.TEXTS_ENABLED = textsEnabled.isSelected();
         GlobalParameters.PHOTOS_ENABLED = photosEnabled.isSelected();
@@ -463,18 +476,18 @@ public class LandingPage extends JFrame {
             GlobalParameters.RESULT_SIZE = "50";
         }
         String name = table1.getValueAt(table1.getSelectedRow(), 0).toString().replaceAll("\\<.*?>", "");
-        if (!pageId.equals(getPageIdFromNameOnPagesJTable(pages, name))){
+        if (!pageId.equals(getPageIdFromNameOnPagesJTable(pages, name))) {
             performActionForPageListListener();
         }
         pageId = getPageIdFromNameOnPagesJTable(pages, name);
         pages = fbCollector.loadFacebookPageDetails(pages, pageId, true);
-        dtm = populatePostDataOnGui(pages, pageId,true);
+        dtm = populatePostDataOnGui(pages, pageId, true);
         table4.setModel(dtm);
         setupTable4Size();
         table4.repaint();
     }
 
-    private void setupTable4Size(){
+    private void setupTable4Size() {
 //        header.setFont(new Font("Serif", Font.BOLD, 16));
         table4.getColumnModel().getColumn(0).setPreferredWidth(25);
         table4.getColumnModel().getColumn(0).setMaxWidth(35);
