@@ -308,6 +308,9 @@ public class LandingPage extends JFrame {
         for (Map.Entry<String, PageData> page : pages.getPageDetails().entrySet()) {
             table.addRow(new Object[]{"<html><b>" + page.getValue().getPageName() + "</b></html>", "<html><b>" + Integer.valueOf(page.getValue().getLikes()) + "</b></html>"});
         }
+        Vector data = table.getDataVector();
+        Collections.sort(data, new ColumnSorter(1, false));
+        table.fireTableStructureChanged();
         return table;
     }
 
@@ -357,13 +360,12 @@ public class LandingPage extends JFrame {
             }
         }
         Vector data = table.getDataVector();
-        Collections.sort(data, new ColumnSorter(1, false));
+        Collections.sort(data, new ColumnSorter(3, false));
         table.fireTableStructureChanged();
         return table;
     }
 
     private Object getTableRowBasedOnPosition(PageTable pages, String pageId, int i, int count) {
-        System.out.println(String.valueOf((double)(Math.round((Double.valueOf("10")/Double.valueOf("3"))*100))/100));
         return new Object[]{
                 count,
                 this.getLabelFromImageUrl(pages.getPageDetails().get(pageId).getPostData().getTable().get(i).getThumbnail()),
