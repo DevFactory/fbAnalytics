@@ -7,6 +7,7 @@ import net.mormolhs.facebook.fbanalytics.integration.facebookdatacollectors.Face
 import net.mormolhs.facebook.fbanalytics.resources.GlobalParameters;
 import net.mormolhs.facebook.fbanalytics.ui.dataview.FbStatsDateUtils;
 import net.mormolhs.facebook.fbanalytics.utils.ColumnSorter;
+import net.mormolhs.facebook.fbanalytics.utils.CommonGuiTools;
 import org.jbundle.thin.base.screen.jcalendarbutton.JCalendarButton;
 
 import javax.imageio.ImageIO;
@@ -38,10 +39,7 @@ public class LandingPage extends JFrame {
     JPanel panel2;
     JLabel coverPictureLabel;
     JLabel labelProfilePicture;
-    JLabel pageNameLabel;
-    JLabel pageLikesLabel;
-    JLabel pageTalkingAboutLabel;
-    JPanel pageInfoPanel;
+    JLabel pageInfoLabel;    JPanel pageInfoPanel;
     JTable table4;
     JScrollPane panel4;
     JPanel panel234;
@@ -113,6 +111,7 @@ public class LandingPage extends JFrame {
         pages = fbCollector.loadFacebookPageDetails(pages, pageId, false);
 
         panel234 = new JPanel();
+        panel234.setLayout(new GridLayout(1,3,0,5));
         panel234.setLayout(new BoxLayout(panel234, BoxLayout.Y_AXIS));
         this.add(panel234, BorderLayout.EAST);
         panel2 = new JPanel();
@@ -120,11 +119,12 @@ public class LandingPage extends JFrame {
         panel2.setMaximumSize(new Dimension(1050, 150));
 //        add top panel for cover picture
         if (coverPictureLabel == null) {
-            coverPictureLabel = new JLabel();
             try {
                 URL img = new URL("http://www.acsu.buffalo.edu/~rslaine/imageNotFound.jpg");
                 coverPicture = new ImageIcon(img);
-                coverPictureLabel.setIcon(coverPicture);
+                coverPicture = new ImageIcon(CommonGuiTools.getScaledImage(coverPicture.getImage(), 1150, 150));
+                coverPictureLabel = new JLabel("",coverPicture,JLabel.CENTER);
+                coverPictureLabel.setMaximumSize(new Dimension(150,150));
                 panel2.add(coverPictureLabel);
                 panel2.repaint();
             } catch (MalformedURLException e) {
@@ -141,22 +141,17 @@ public class LandingPage extends JFrame {
 //        add top panel for profile picture and likes label
 
         labelProfilePicture = new JLabel();
+        labelProfilePicture.setAlignmentX(SwingConstants.LEFT);
         pageInfoPanel = new JPanel();
-        pageInfoPanel.setLayout(new GridLayout(6, 1, 0, 0));
-        pageNameLabel = new JLabel();
-        pageLikesLabel = new JLabel();
-        pageTalkingAboutLabel = new JLabel();
-        pageInfoPanel.add(new JLabel(""));
-        pageInfoPanel.add(new JLabel(""));
-        pageInfoPanel.add(pageNameLabel);
-        pageInfoPanel.add(pageLikesLabel);
-        pageInfoPanel.add(pageTalkingAboutLabel);
-        pageInfoPanel.add(new JLabel(""));
+        pageInfoLabel = new JLabel();
 
         JPanel panel3a = new JPanel();
-        panel3a.setLayout(new GridLayout(1, 1, 2, 0));
-        panel3a.add(labelProfilePicture, BorderLayout.EAST);
-        panel3a.add(pageInfoPanel, BorderLayout.CENTER);
+        SpringLayout panel3aLayout = new SpringLayout();
+
+        panel3aLayout.putConstraint(SpringLayout.WEST, pageInfoLabel,110,SpringLayout.WEST, labelProfilePicture);
+        panel3a.setLayout(panel3aLayout);
+        panel3a.add(labelProfilePicture);
+        panel3a.add(pageInfoLabel);
         panel3a.repaint();
 
         photosEnabled = new JCheckBox("Photos");
@@ -207,37 +202,53 @@ public class LandingPage extends JFrame {
         panel3b.setLayout(new GridLayout(4, 1, 0, 0));
 
         JPanel panel3br1 = new JPanel();
-//        panel3br1.setLayout(new GridLayout(1, 3, 0, 0));
-        panel3b.add(new JLabel(""));
-        panel3br1.add(linksEnabled);
-        panel3br1.add(textsEnabled);
-        panel3br1.add(photosEnabled);
+        panel3br1.setLayout(new GridLayout(1, 2, 0, 0));
+        JLabel fromCalLabel = new JLabel("<html><b>From: </b></html>");
+        fromCalLabel.setFont(new Font("Serif", Font.BOLD, 14));
+        fromCalLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        panel3br1.add(fromCalLabel,BorderLayout.EAST);
+        panel3br1.add(calendarFrom);
         panel3b.add(panel3br1);
 
         JPanel panel3br2 = new JPanel();
-//        panel3br2.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        panel3br2.setLayout(new GridLayout(1, 3, 0, 0));
-        panel3br2.add(calendarFrom);
+        panel3br2.setLayout(new GridLayout(1, 2, 0, 0));
+        JLabel toCalLabel = new JLabel("<html><b>To: </b></html>");
+        toCalLabel.setFont(new Font("Serif", Font.BOLD, 14));
+        toCalLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        panel3br2.add(toCalLabel,BorderLayout.EAST);
         panel3br2.add(calendarTo);
         panel3b.add(panel3br2);
 
         JPanel panel3br3 = new JPanel();
 //        panel3br3.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        panel3br3.setLayout(new GridLayout(1, 4, 0, 0));
+        panel3br3.setLayout(new GridLayout(1, 2, 0, 0));
         executeButton.repaint();
-        JLabel textAreaLabel = new JLabel("            Results: ");
+        JLabel textAreaLabel = new JLabel("Results: ");
         textAreaLabel.setFont(new Font("Serif", Font.BOLD, 14));
         textAreaLabel.setEnabled(true);
+        textAreaLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         panel3br3.add(textAreaLabel, BorderLayout.EAST);
-        panel3br3.add(textarea, BorderLayout.WEST);
-        panel3br3.add(executeButton);
-        panel3br3.add(new JLabel(""));
+        JPanel panel3br3a = new JPanel();
+        panel3br3a.setLayout(new GridLayout(1, 2, 0, 0));
+        panel3br3a.add(textarea, BorderLayout.WEST);
+        panel3br3a.add(executeButton, BorderLayout.EAST);
+        panel3br3.add(panel3br3a);
         panel3b.add(panel3br3);
+
+        JPanel panel3br4 = new JPanel();
+        panel3br4.setLayout(new GridLayout(1, 2, 0, 0));
+        panel3br4.add(new JLabel(""));
+        JPanel checkBoxesPanel = new JPanel();
+        checkBoxesPanel.add(linksEnabled);
+        checkBoxesPanel.add(textsEnabled);
+        checkBoxesPanel.add(photosEnabled);
+        panel3br4.add(checkBoxesPanel);
+        panel3b.add(panel3br4);
 
         panel3a.repaint();
         panel3b.repaint();
-        panel3.setLayout(new GridLayout(1, 2, 300, 0));
-        panel3.add(panel3a, BorderLayout.WEST);
+        panel3.setLayout(new GridLayout(1, 2, 0, 0));
+        panel3.add(panel3a);
         panel3.add(panel3b);
         panel3.repaint();
         panel234.add(panel3);
@@ -315,7 +326,7 @@ public class LandingPage extends JFrame {
     }
 
     public DefaultTableModel populatePostDataOnGui(PageTable pages, String pageId, boolean postDataVisible) {
-        DefaultTableModel table = new DefaultTableModel(null, new Object[]{"<html><b>#</b></html>", "<html><b>Post Thumbnail</b></html>", "<html><b>Type</b></html>", "<html><b>Date & Time (GMT)</b></html>", "<html><b>Post Text</b></html>", "<html><b>Post Link</b></html>", "<html><b>Likes</b></html>", "<html><b>Comments</b></html>", "<html><b>Shares</b></html>", "<html><b>Total</b></html>", "<html><b>Reach</b></html>", "<html><b>Clicks</b></html>", "<html><b>CTR</b></html>"}) {
+        DefaultTableModel table = new DefaultTableModel(null, new Object[]{"<html><b>#</b></html>", "<html><b>Post Thumbnail</b></html>", "<html><b>Type</b></html>", "<html><b>Date & Time (GMT)</b></html>", "<html><b>Post Text</b></html>", "<html><b>Post Link</b></html>", "<html><b>Likes</b></html>", "<html><b>Comments</b></html>", "<html><b>Shares</b></html>", "<html><b>Total</b></html>", "<html><b>Reach</b></html>", "<html><b>Clicks</b></html>", "<html><b>CTR(%)</b></html>"}) {
             @Override
             public Class<?> getColumnClass(int col) {
                 switch (col) {
@@ -380,7 +391,7 @@ public class LandingPage extends JFrame {
                 Integer.valueOf(pages.getPageDetails().get(pageId).getPostData().getTable().get(i).getReached()),
                 Integer.valueOf(pages.getPageDetails().get(pageId).getPostData().getTable().get(i).getClicks()),
                 pages.getPageDetails().get(pageId).getPostData().getTable().get(i).getReached().equals("0") ? "0" :
-                        String.valueOf((double)(Math.round(((Double.valueOf(pages.getPageDetails().get(pageId).getPostData().getTable().get(i).getClicks()))) / Double.valueOf(pages.getPageDetails().get(pageId).getPostData().getTable().get(i).getReached())*100))/100)};
+                        String.valueOf((double)(Math.round(((Double.valueOf(pages.getPageDetails().get(pageId).getPostData().getTable().get(i).getClicks()))) / Double.valueOf(pages.getPageDetails().get(pageId).getPostData().getTable().get(i).getReached())*100)))};
     }
 
     private ImageIcon getLabelFromImageUrl(String imageUrl) {
@@ -436,24 +447,30 @@ public class LandingPage extends JFrame {
                 profileImg = new URL(pages.getPageDetails().get(pageId).getPageProfilePicture());
             }
             coverPicture = new ImageIcon(coverImg);
+            coverPicture = new ImageIcon(CommonGuiTools.getScaledImage(coverPicture.getImage(), 1150, 150));
             profilePicture = new ImageIcon(profileImg);
         } catch (MalformedURLException e1) {
             e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
-        pageNameLabel.setText(pages.getPageDetails().get(pageId).getPageName());
-        pageLikesLabel.setText(pages.getPageDetails().get(pageId).getLikes() + " like this");
-        pageTalkingAboutLabel.setText(pages.getPageDetails().get(pageId).getTalkingAbout() + " talking about this");
-        pageNameLabel.setFont(new Font("Serif", Font.BOLD, 24));
-        pageLikesLabel.setFont(new Font("Serif", Font.BOLD, 14));
-        pageLikesLabel.setEnabled(false);
-        pageTalkingAboutLabel.setFont(new Font("Serif", Font.BOLD, 14));
-        pageTalkingAboutLabel.setEnabled(false);
+        String PageInfoHtmlLabel = "<html>\n" +
+                "\t<body>\n" +
+                "\t\t<p>\n" +
+                "\t\t\t<span style=\"font-family:verdana,geneva,sans-serif;\"><span style=\"font-size:15px;\"><strong>" + pages.getPageDetails().get(pageId).getPageName() + "</strong></span></span></p><br>\n" +
+                "\t\t<p>\n" +
+                "\t\t\t<span style=\"color:#696969;\"><span style=\"font-size: 12px;\"><span style=\"font-family: verdana,geneva,sans-serif;\">" + pages.getPageDetails().get(pageId).getLikes() + " like this</span></span></span></p>\n" +
+                "\t\t<p>\n" +
+                "\t\t\t<span style=\"color:#696969;\"><span style=\"font-size: 12px;\"><span style=\"font-family: verdana,geneva,sans-serif;\">" + pages.getPageDetails().get(pageId).getTalkingAbout() + " talking about this</span></span></span></p>\n" +
+                "\t</body>\n" +
+                "</html>\n";
+
+        pageInfoLabel.setText(PageInfoHtmlLabel);
         labelProfilePicture.setIcon(profilePicture);
-        labelProfilePicture.setVerticalAlignment(SwingConstants.CENTER);
-        labelProfilePicture.setHorizontalAlignment(SwingConstants.CENTER);
         labelProfilePicture.setPreferredSize(new Dimension(profilePicture.getIconWidth(), profilePicture.getIconHeight()));
+        labelProfilePicture.repaint();
         coverPictureLabel.setIcon(coverPicture);
+        coverPictureLabel.setMaximumSize(new Dimension(1150,150));
+        coverPictureLabel.repaint();
         panel2.add(coverPictureLabel);
         panel2.repaint();
         panel3.repaint();
