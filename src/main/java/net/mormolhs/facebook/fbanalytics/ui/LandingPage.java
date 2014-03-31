@@ -108,7 +108,6 @@ public class LandingPage extends JFrame {
         if (pageId == null) {
             pageId = pages.getPageDetails().entrySet().iterator().next().getKey();
         }
-        pages = fbCollector.loadFacebookPageDetails(pages, pageId, false);
 
         panel234 = new JPanel();
         panel234.setLayout(new GridLayout(1,3,0,5));
@@ -148,7 +147,7 @@ public class LandingPage extends JFrame {
         JPanel panel3a = new JPanel();
         SpringLayout panel3aLayout = new SpringLayout();
 
-        panel3aLayout.putConstraint(SpringLayout.WEST, pageInfoLabel,110,SpringLayout.WEST, labelProfilePicture);
+        panel3aLayout.putConstraint(SpringLayout.WEST, pageInfoLabel,170,SpringLayout.WEST, labelProfilePicture);
         panel3a.setLayout(panel3aLayout);
         panel3a.add(labelProfilePicture);
         panel3a.add(pageInfoLabel);
@@ -317,7 +316,7 @@ public class LandingPage extends JFrame {
         };
 
         for (Map.Entry<String, PageData> page : pages.getPageDetails().entrySet()) {
-            table.addRow(new Object[]{"<html><b>" + page.getValue().getPageName() + "</b></html>", "<html><b>" + Integer.valueOf(page.getValue().getLikes()) + "</b></html>"});
+            table.addRow(new Object[]{page.getValue().getPageName(), Integer.valueOf(page.getValue().getLikes())});
         }
         Vector data = table.getDataVector();
         Collections.sort(data, new ColumnSorter(1, false));
@@ -439,12 +438,12 @@ public class LandingPage extends JFrame {
             if (pages.getPageDetails().get(pageId).getPageCoverPicture().equals("N/A")) {
                 coverImg = new URL("http://www.acsu.buffalo.edu/~rslaine/imageNotFound.jpg");
             } else {
-                coverImg = new URL(pages.getPageDetails().get(pageId).getPageCoverPicture());
+                coverImg = new URL((pages.getPageDetails().get(pageId).getPageCoverPicture()));
             }
             if (pages.getPageDetails().get(pageId).getPageProfilePicture().equals("N/A")) {
                 profileImg = new URL("http://www.acsu.buffalo.edu/~rslaine/imageNotFound.jpg");
             } else {
-                profileImg = new URL(pages.getPageDetails().get(pageId).getPageProfilePicture());
+                profileImg = new URL((pages.getPageDetails().get(pageId).getPageProfilePicture()));
             }
             coverPicture = new ImageIcon(coverImg);
             coverPicture = new ImageIcon(CommonGuiTools.getScaledImage(coverPicture.getImage(), 1150, 150));
@@ -456,6 +455,7 @@ public class LandingPage extends JFrame {
         String PageInfoHtmlLabel = "<html>\n" +
                 "\t<body>\n" +
                 "\t\t<p>\n" +
+                "\t\t<br>\n" +
                 "\t\t\t<span style=\"font-family:verdana,geneva,sans-serif;\"><span style=\"font-size:15px;\"><strong>" + pages.getPageDetails().get(pageId).getPageName() + "</strong></span></span></p><br>\n" +
                 "\t\t<p>\n" +
                 "\t\t\t<span style=\"color:#696969;\"><span style=\"font-size: 12px;\"><span style=\"font-family: verdana,geneva,sans-serif;\">" + pages.getPageDetails().get(pageId).getLikes() + " like this</span></span></span></p>\n" +
@@ -497,7 +497,7 @@ public class LandingPage extends JFrame {
             performActionForPageListListener();
         }
         pageId = getPageIdFromNameOnPagesJTable(pages, name);
-        pages = fbCollector.loadFacebookPageDetails(pages, pageId, true);
+        pages = fbCollector.getAllPostsForFacebookPage(pages, pageId);
         dtm = populatePostDataOnGui(pages, pageId, true);
         table4.setModel(dtm);
         setupTable4Size();
