@@ -37,9 +37,12 @@ public class LandingPage extends JFrame {
     ImageIcon coverPicture;
     ImageIcon profilePicture;
     JPanel panel2;
+//    JPanel coverPicturePanel;
     JLabel coverPictureLabel;
+    JLabel logoPictureLabel;
     JLabel labelProfilePicture;
-    JLabel pageInfoLabel;    JPanel pageInfoPanel;
+    JLabel pageInfoLabel;
+    JPanel pageInfoPanel;
     JTable table4;
     JScrollPane panel4;
     JPanel panel234;
@@ -110,48 +113,69 @@ public class LandingPage extends JFrame {
         }
 
         panel234 = new JPanel();
-        panel234.setLayout(new GridLayout(1,3,0,5));
-        panel234.setLayout(new BoxLayout(panel234, BoxLayout.Y_AXIS));
+        BoxLayout pane234Layout = new BoxLayout(panel234, BoxLayout.PAGE_AXIS);
+        panel234.setLayout(pane234Layout);
         this.add(panel234, BorderLayout.EAST);
+        panel234.add(Box.createRigidArea(new Dimension(0, 10)));
         panel2 = new JPanel();
-        panel2.setPreferredSize(new Dimension(950, 150));
-        panel2.setMaximumSize(new Dimension(1050, 150));
+        panel2.setLayout(new GridLayout(1, 2, 25, 0));
+        panel2.setPreferredSize(new Dimension(1050, 150));
+        panel2.setMaximumSize(new Dimension(1100, 150));
 //        add top panel for cover picture
         if (coverPictureLabel == null) {
             try {
+                if (coverPicture==null){
                 URL img = new URL("http://www.acsu.buffalo.edu/~rslaine/imageNotFound.jpg");
-                coverPicture = new ImageIcon(img);
-                coverPicture = new ImageIcon(CommonGuiTools.getScaledImage(coverPicture.getImage(), 1150, 150));
+                    coverPicture = new ImageIcon(img);
+                    coverPicture = new ImageIcon(CommonGuiTools.getScaledImage(coverPicture.getImage(), 550, 150));
+                } else{
+                coverPicture = new ImageIcon(CommonGuiTools.getScaledImage(coverPicture.getImage(), 550, 150));
+                }
                 coverPictureLabel = new JLabel("",coverPicture,JLabel.CENTER);
-                coverPictureLabel.setMaximumSize(new Dimension(150,150));
+                coverPictureLabel.setMaximumSize(new Dimension(550,150));
                 panel2.add(coverPictureLabel);
-                panel2.repaint();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+        }
+         
+        //        add top panel for logo picture
+        if (logoPictureLabel == null) {
+            try {
+                URL img = new URL("http://i.imgur.com/enDKA6z.png");
+                ImageIcon logoPicture = new ImageIcon(img);
+                logoPicture = new ImageIcon(CommonGuiTools.getScaledImage(logoPicture.getImage(), 550, 150));
+                logoPictureLabel = new JLabel("",logoPicture,JLabel.CENTER);
+                logoPictureLabel.setMaximumSize(new Dimension(550,150));
+                panel2.add(logoPictureLabel);
             } catch (MalformedURLException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
         }
 
+        panel2.repaint();
         panel234.add(panel2);
+        panel234.add(Box.createRigidArea(new Dimension(0,10)));
 
 //        add center panel for date range/result limit  and refresh button label
         panel3 = new JPanel();
-        panel3.setPreferredSize(new Dimension(1150, 150));
+        panel3.setPreferredSize(new Dimension(1150, 140));
+        panel3.setMaximumSize(new Dimension(1150, 140));
 
 //        add top panel for profile picture and likes label
 
         labelProfilePicture = new JLabel();
-        labelProfilePicture.setAlignmentX(SwingConstants.LEFT);
         pageInfoPanel = new JPanel();
         pageInfoLabel = new JLabel();
 
         JPanel panel3a = new JPanel();
         SpringLayout panel3aLayout = new SpringLayout();
-
-        panel3aLayout.putConstraint(SpringLayout.WEST, pageInfoLabel,170,SpringLayout.WEST, labelProfilePicture);
+        panel3aLayout.putConstraint(SpringLayout.WEST, labelProfilePicture,25,SpringLayout.WEST, panel3);
+        panel3aLayout.putConstraint(SpringLayout.WEST, pageInfoLabel,160,SpringLayout.WEST, labelProfilePicture);
         panel3a.setLayout(panel3aLayout);
         panel3a.add(labelProfilePicture);
         panel3a.add(pageInfoLabel);
-        panel3a.repaint();
+        panel3a.setAlignmentY(SwingConstants.CENTER);
 
         photosEnabled = new JCheckBox("Photos");
         linksEnabled = new JCheckBox("Links");
@@ -219,7 +243,6 @@ public class LandingPage extends JFrame {
         panel3b.add(panel3br2);
 
         JPanel panel3br3 = new JPanel();
-//        panel3br3.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         panel3br3.setLayout(new GridLayout(1, 2, 0, 0));
         executeButton.repaint();
         JLabel textAreaLabel = new JLabel("Results: ");
@@ -251,6 +274,7 @@ public class LandingPage extends JFrame {
         panel3.add(panel3b);
         panel3.repaint();
         panel234.add(panel3);
+        panel234.add(Box.createRigidArea(new Dimension(0,10)));
 
 //        add bottom right panel for page's post details label
 
@@ -262,14 +286,17 @@ public class LandingPage extends JFrame {
         setupTable4Size();
         table4.repaint();
         panel4 = new JScrollPane(table4);
-        panel4.setPreferredSize(new Dimension(1150, 440));
+        panel4.setPreferredSize(new Dimension(1150, 370));
+        panel4.setMaximumSize(new Dimension(1150, 370));
         panel4.repaint();
         panel234.add(panel4);
         panel234.setPreferredSize(new Dimension(1150, 690));
+        panel234.setMaximumSize(new Dimension(1150, 690));
         panel234.repaint();
         this.pack();
         this.repaint();
     }
+
 
 
     public void run() {
@@ -446,7 +473,7 @@ public class LandingPage extends JFrame {
                 profileImg = new URL((pages.getPageDetails().get(pageId).getPageProfilePicture()));
             }
             coverPicture = new ImageIcon(coverImg);
-            coverPicture = new ImageIcon(CommonGuiTools.getScaledImage(coverPicture.getImage(), 1150, 150));
+            coverPicture = new ImageIcon(CommonGuiTools.getScaledImage(coverPicture.getImage(), 550, 150));
             profilePicture = new ImageIcon(profileImg);
         } catch (MalformedURLException e1) {
             e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -456,7 +483,8 @@ public class LandingPage extends JFrame {
                 "\t<body>\n" +
                 "\t\t<p>\n" +
                 "\t\t<br>\n" +
-                "\t\t\t<span style=\"font-family:verdana,geneva,sans-serif;\"><span style=\"font-size:15px;\"><strong>" + pages.getPageDetails().get(pageId).getPageName() + "</strong></span></span></p><br>\n" +
+                "\t\t<div WIDTH=400\n" +
+                "\t\t\t<span style=\"font-family:verdana,geneva,sans-serif;\"><span style=\"font-size:15px;\"><strong>" + pages.getPageDetails().get(pageId).getPageName() + "\n</strong></span></span></div></p><br>" +
                 "\t\t<p>\n" +
                 "\t\t\t<span style=\"color:#696969;\"><span style=\"font-size: 12px;\"><span style=\"font-family: verdana,geneva,sans-serif;\">" + pages.getPageDetails().get(pageId).getLikes() + " like this</span></span></span></p>\n" +
                 "\t\t<p>\n" +
@@ -469,9 +497,7 @@ public class LandingPage extends JFrame {
         labelProfilePicture.setPreferredSize(new Dimension(profilePicture.getIconWidth(), profilePicture.getIconHeight()));
         labelProfilePicture.repaint();
         coverPictureLabel.setIcon(coverPicture);
-        coverPictureLabel.setMaximumSize(new Dimension(1150,150));
         coverPictureLabel.repaint();
-        panel2.add(coverPictureLabel);
         panel2.repaint();
         panel3.repaint();
         if (dtm != null && dtm.getRowCount() > 0) {
@@ -505,46 +531,32 @@ public class LandingPage extends JFrame {
     }
 
     private void setupTable4Size() {
-//        header.setFont(new Font("Serif", Font.BOLD, 16));
         table4.getColumnModel().getColumn(0).setPreferredWidth(25);
         table4.getColumnModel().getColumn(0).setMaxWidth(35);
-//        table4.getColumnModel().getColumn(1).setHeaderRenderer(header);
         table4.getColumnModel().getColumn(1).setPreferredWidth(110);
         table4.getColumnModel().getColumn(1).setMaxWidth(120);
-//        table4.getColumnModel().getColumn(1).setHeaderRenderer(header);
         table4.getColumnModel().getColumn(2).setPreferredWidth(50);
         table4.getColumnModel().getColumn(2).setMaxWidth(60);
-//        table4.getColumnModel().getColumn(2).setHeaderRenderer(header);
         table4.getColumnModel().getColumn(3).setPreferredWidth(170);
         table4.getColumnModel().getColumn(3).setMaxWidth(180);
-//        table4.getColumnModel().getColumn(3).setHeaderRenderer(header);
         table4.getColumnModel().getColumn(4).setPreferredWidth(150);
         table4.getColumnModel().getColumn(4).setMaxWidth(190);
-//        table4.getColumnModel().getColumn(4).setHeaderRenderer(header);
         table4.getColumnModel().getColumn(5).setPreferredWidth(100);
         table4.getColumnModel().getColumn(5).setMaxWidth(130);
-//        table4.getColumnModel().getColumn(5).setHeaderRenderer(header);
         table4.getColumnModel().getColumn(6).setPreferredWidth(50);
         table4.getColumnModel().getColumn(6).setMaxWidth(60);
-//        table4.getColumnModel().getColumn(6).setHeaderRenderer(header);
         table4.getColumnModel().getColumn(7).setPreferredWidth(70);
         table4.getColumnModel().getColumn(7).setMaxWidth(80);
-//        table4.getColumnModel().getColumn(7).setHeaderRenderer(header);
         table4.getColumnModel().getColumn(8).setPreferredWidth(50);
         table4.getColumnModel().getColumn(8).setMaxWidth(60);
-//        table4.getColumnModel().getColumn(8).setHeaderRenderer(header);
         table4.getColumnModel().getColumn(9).setPreferredWidth(50);
         table4.getColumnModel().getColumn(9).setMaxWidth(60);
-//        table4.getColumnModel().getColumn(9).setHeaderRenderer(header);
         table4.getColumnModel().getColumn(10).setPreferredWidth(50);
         table4.getColumnModel().getColumn(10).setMaxWidth(60);
-//        table4.getColumnModel().getColumn(10).setHeaderRenderer(header);
         table4.getColumnModel().getColumn(11).setPreferredWidth(50);
         table4.getColumnModel().getColumn(11).setMaxWidth(60);
-//        table4.getColumnModel().getColumn(11).setHeaderRenderer(header);
         table4.getColumnModel().getColumn(12).setPreferredWidth(50);
         table4.getColumnModel().getColumn(12).setMaxWidth(60);
-//        table4.getColumnModel().getColumn(12).setHeaderRenderer(header);
         table4.setColumnSelectionAllowed(true);
         table4.repaint();
     }
