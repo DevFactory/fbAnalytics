@@ -21,14 +21,14 @@ import java.util.*;
  */
 public class FacebookPageLoader {
 
-    FacebookQueryExecutor  facebookQueryExecutor = new FacebookQueryExecutor();
+    FacebookQueryExecutor facebookQueryExecutor = new FacebookQueryExecutor();
     FacebookPostsLoader fbPostsLoader = new FacebookPostsLoader();
 
     public PageTable loadPages(Facebook fb) {
         PageTable data = new PageTable();
         Map<String, PageData> unsortedPagesDataMap = new HashMap<String, PageData>();
         ResponseList<Account> accounts = getFacebookUserAccounts(fb);
-        for (Account account: accounts) {
+        for (Account account : accounts) {
             unsortedPagesDataMap.put(account.getId(), this.loadPageData(fb, account.getId(), false));
             unsortedPagesDataMap.get(account.getId()).setPageName(account.getName());
         }
@@ -37,8 +37,8 @@ public class FacebookPageLoader {
         return data;
     }
 
-    public PageTable loadPagePosts(Facebook fb,PageTable data, String pageId) {
-        data.getPageDetails().get(pageId).setPostData(this.loadPageData(fb,pageId,true).getPostData());
+    public PageTable loadPagePosts(Facebook fb, PageTable data, String pageId) {
+        data.getPageDetails().get(pageId).setPostData(this.loadPageData(fb, pageId, true).getPostData());
         return data;
     }
 
@@ -50,10 +50,10 @@ public class FacebookPageLoader {
         try {
             responseGeneralData = httpGetClient.sendGetRequest("http://graph.facebook.com/" + pageId);
             responseProfilePicture = httpGetClient.sendGetRequest("http://graph.facebook.com/" + pageId + "/?fields=picture.height(130).width(130)");
-            if (responseGeneralData.contains("Unsupported get request.") || responseProfilePicture.contains("Unsupported get request.")){
+            if (responseGeneralData.contains("Unsupported get request.") || responseProfilePicture.contains("Unsupported get request.")) {
                 System.out.println("Possible cause: Facebook Page is not published");
                 System.out.println("fgInsightsSniffer will try to fetch data with FQL.");
-                this.getPageDataWithFql(fb,pageId,pageData);
+                this.getPageDataWithFql(fb, pageId, pageData);
             } else {
                 this.getPageDataFromJSON(pageData, responseGeneralData, responseProfilePicture);
             }
@@ -76,14 +76,14 @@ public class FacebookPageLoader {
         return null;
     }
 
-    private PageData getPageDataFromJSON(PageData pageData, String responseGeneralData, String responseProfilePicture){
-        pageData.setLikes(JSonParser.getValueFromJson(responseGeneralData, "likes")!=null ? JSonParser.getValueFromJson(responseGeneralData, "likes") : "0");
+    private PageData getPageDataFromJSON(PageData pageData, String responseGeneralData, String responseProfilePicture) {
+        pageData.setLikes(JSonParser.getValueFromJson(responseGeneralData, "likes") != null ? JSonParser.getValueFromJson(responseGeneralData, "likes") : "0");
         pageData.setTalkingAbout(JSonParser.getValueFromJson(responseGeneralData, "talking_about_count") != null ? JSonParser.getValueFromJson(responseGeneralData, "talking_about_count") : "0");
-        if (JSonParser.getValueFromJson(responseProfilePicture, "url")==null){
+        if (JSonParser.getValueFromJson(responseProfilePicture, "url") == null) {
             pageData.setPageProfilePicture("N/A");
         }
-        pageData.setPageProfilePicture(JSonParser.getValueFromJson(responseProfilePicture, "url").replace("https","http").replace("\\","").replaceAll("\"",""));
-        pageData.setPageCoverPicture(JSonParser.getValueFromJson(responseGeneralData, "source")!=null ? JSonParser.getValueFromJson(responseGeneralData, "source").replace("https","http").replace("\\","").replaceAll("\"","") : "N/A");
+        pageData.setPageProfilePicture(JSonParser.getValueFromJson(responseProfilePicture, "url").replace("https", "http").replace("\\", "").replaceAll("\"", ""));
+        pageData.setPageCoverPicture(JSonParser.getValueFromJson(responseGeneralData, "source") != null ? JSonParser.getValueFromJson(responseGeneralData, "source").replace("https", "http").replace("\\", "").replaceAll("\"", "") : "N/A");
 
         return pageData;
     }
@@ -108,7 +108,7 @@ public class FacebookPageLoader {
         }
         return pageData;
     }
-      
+
     private static <String, Integer extends Comparable<? super Integer>> SortedSet<Map.Entry<String, Integer>> entriesSortedByValues(Map<String, Integer> map) {
         SortedSet<Map.Entry<String, Integer>> sortedEntries = new TreeSet<Map.Entry<String, Integer>>(
                 new Comparator<Map.Entry<String, Integer>>() {

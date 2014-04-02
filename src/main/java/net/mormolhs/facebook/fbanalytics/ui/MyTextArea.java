@@ -11,11 +11,11 @@ import java.awt.event.KeyListener;
 /**
  * Created by toikonomakos on 3/16/14.
  */
-public class MyTextArea  extends JTextArea implements KeyListener {
+public class MyTextArea extends JTextArea implements KeyListener {
     String textareainfo;
 
     public MyTextArea() {
-        this.setPreferredSize(new Dimension(50,30));
+        this.setPreferredSize(new Dimension(50, 30));
     }
 
     public String getTextareainfo() {
@@ -34,7 +34,7 @@ public class MyTextArea  extends JTextArea implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-            setTextareainfo(this.getText());
+        setTextareainfo(this.getText());
     }
 
     @Override

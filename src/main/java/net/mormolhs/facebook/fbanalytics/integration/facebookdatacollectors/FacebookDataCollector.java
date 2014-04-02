@@ -14,22 +14,13 @@ public class FacebookDataCollector {
     FacebookPageLoader fbPageLoader = new FacebookPageLoader();
 
 
-    public PageTable getAllFacebookPagesForAccount(){
+    public PageTable getAllFacebookPagesForAccount() {
         return fbPageLoader.loadPages(fb);
     }
 
 
-    public PageTable getAllPostsForFacebookPage(PageTable data,String pageId){
-        return fbPageLoader.loadPagePosts(fb,data,pageId);
+    public PageTable getAllPostsForFacebookPage(PageTable data, String pageId) {
+        return fbPageLoader.loadPagePosts(fb, data, pageId);
     }
-
-/*
-    public PageTable loadFacebookPageDetails(PageTable data, String pageId, boolean includePageDetails){
-        PageData postData = fbPageLoader.loadPageData(fb,pageId,includePageDetails);
-        data.getPageDetails().remove(pageId);
-        data.getPageDetails().put(pageId,postData);
-        return data;
-    }
-*/
 
 }

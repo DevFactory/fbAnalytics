@@ -7,20 +7,22 @@ import java.util.Vector;
 public class ColumnSorter implements Comparator {
     int colIndex;
     boolean ascending;
+
     public ColumnSorter(int colIndex, boolean ascending) {
         this.colIndex = colIndex;
         this.ascending = ascending;
     }
+
     public int compare(Object a, Object b) {
-        Vector v1 = (Vector)a;
-        Vector v2 = (Vector)b;
+        Vector v1 = (Vector) a;
+        Vector v2 = (Vector) b;
         Object o1 = v1.get(colIndex);
         Object o2 = v2.get(colIndex);
 
-        if (o1 instanceof String && ((String)o1).length() == 0) {
+        if (o1 instanceof String && ((String) o1).length() == 0) {
             o1 = null;
         }
-        if (o2 instanceof String && ((String)o2).length() == 0) {
+        if (o2 instanceof String && ((String) o2).length() == 0) {
             o2 = null;
         }
 
@@ -34,9 +36,9 @@ public class ColumnSorter implements Comparator {
             return -1;
         } else if (o1 instanceof Comparable) {
             if (ascending) {
-                return ((Comparable)o1).compareTo(o2);
+                return ((Comparable) o1).compareTo(o2);
             } else {
-                return ((Comparable)o2).compareTo(o1);
+                return ((Comparable) o2).compareTo(o1);
             }
         } else {
             if (ascending) {

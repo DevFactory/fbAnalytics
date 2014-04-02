@@ -9,9 +9,9 @@ import java.util.Date;
  */
 public class FbStatsDateUtils {
 
-    public static String convertTime(String timeInput){
+    public static String convertTime(String timeInput) {
         long time = Long.valueOf(timeInput);
-        Date date = new Date(time*1000);
+        Date date = new Date(time * 1000);
         Format format = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
         return format.format(date).toString();
     }

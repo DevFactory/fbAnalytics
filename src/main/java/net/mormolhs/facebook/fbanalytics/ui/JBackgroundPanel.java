@@ -12,9 +12,9 @@ public class JBackgroundPanel extends JPanel {
     public JBackgroundPanel() {
 
     }
-    
-    public void setImg(ImageIcon img){
-       this.img=img;
+
+    public void setImg(ImageIcon img) {
+        this.img = img;
         setPreferredSize(new Dimension(img.getIconWidth(), img.getIconHeight()));
         repaint();
     }

@@ -47,13 +47,13 @@ public class FacebookPostsLoader {
         return postData;
     }
 
-//    TODO: Add date range parameters in epoch format
+    //    TODO: Add date range parameters in epoch format
     private List<String> getPagePostIds(Facebook fb, String pageId) {
         JSONArray jsonArray = null;
-        if (GlobalParameters.DATE_FROM.equals("") || GlobalParameters.DATE_TO.equals("")){
+        if (GlobalParameters.DATE_FROM.equals("") || GlobalParameters.DATE_TO.equals("")) {
             jsonArray = facebookQueryExecutor.executeFQL(fb, "SELECT post_id FROM stream WHERE source_id='" + pageId + "' and type in (80,247,46) order by created_time desc LIMIT " + GlobalParameters.RESULT_SIZE);
         } else {
-            jsonArray = facebookQueryExecutor.executeFQL(fb, "SELECT post_id FROM stream WHERE source_id='" + pageId + "' AND created_time < '" + String.valueOf(Integer.valueOf(GlobalParameters.DATE_TO)-25200) + "' AND created_time > '" + String.valueOf(Integer.valueOf(GlobalParameters.DATE_FROM)-25200) + "' and type in (80,247,46) order by created_time desc LIMIT " + GlobalParameters.RESULT_SIZE);
+            jsonArray = facebookQueryExecutor.executeFQL(fb, "SELECT post_id FROM stream WHERE source_id='" + pageId + "' AND created_time < '" + String.valueOf(Integer.valueOf(GlobalParameters.DATE_TO) - 25200) + "' AND created_time > '" + String.valueOf(Integer.valueOf(GlobalParameters.DATE_FROM) - 25200) + "' and type in (80,247,46) order by created_time desc LIMIT " + GlobalParameters.RESULT_SIZE);
         }
         List<String> listOfPostIds = new ArrayList<String>();
         if (jsonArray != null && jsonArray.length() > 0) {

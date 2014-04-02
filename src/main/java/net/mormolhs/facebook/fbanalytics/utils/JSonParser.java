@@ -10,7 +10,7 @@ public class JSonParser {
 
     public static String getValueFromJsonBasedOnKey(String JSonString, String key) {
         String value = null;
-        Pattern pattern = Pattern.compile("\""+ key  + "\" : (.*?),");
+        Pattern pattern = Pattern.compile("\"" + key + "\" : (.*?),");
         Matcher matcher = pattern.matcher(JSonString);
         if (matcher.find()) {
             value = matcher.group(1);
