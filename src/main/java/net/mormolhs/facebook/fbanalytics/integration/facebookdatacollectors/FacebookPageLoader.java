@@ -83,7 +83,9 @@ public class FacebookPageLoader {
             pageData.setPageProfilePicture("N/A");
         }
         pageData.setPageProfilePicture(JSonParser.getValueFromJson(responseProfilePicture, "url").replace("https", "http").replace("\\", "").replaceAll("\"", ""));
-        pageData.setPageCoverPicture(JSonParser.getValueFromJson(responseGeneralData, "source") != null ? JSonParser.getValueFromJson(responseGeneralData, "source").replace("https", "http").replace("\\", "").replaceAll("\"", "") : "N/A");
+        pageData.setPageCoverPicture(JSonParser.getValueFromJson(responseGeneralData, "source") != null
+                ? JSonParser.getValueFromJson(responseGeneralData, "source").replace("https", "http").replace("\\", "").replaceAll("\"", "").replace("}","")
+                : "N/A");
 
         return pageData;
     }
